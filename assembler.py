@@ -158,7 +158,6 @@ def assemble(lines):
             if words[3] < -8 or words[3] > 7: # 2s comp [-8, 7]
                 exit(f'Invalid offset for {opcode} on line {pc}')
             machine_code |= words[3] & (2 ** 4 - 1)
-
         yield machine_code
 
 
@@ -217,16 +216,15 @@ if __name__ == '__main__':
         exit_usage()
 
     try:
-        with open(assembly_filename, 'r'): pass
-    except Exception as e:
+        with open(assembly_filename, 'r') as assembly_file:
+            lines = (line.strip() for line in assembly_file)
+            machine_code_list = list(assemble(lines))
+    except IOError as e:
         exit(f"Cannot read input file '{assembly_filename}'! {str(e)}")
-
-    with open(assembly_filename, 'r') as assembly_file:
-        lines = (line.strip() for line in assembly_file)
-        machine_code_list = assemble(lines)
-        try:
-            with open(machine_code_filename, 'wb' if fmt == 'binary' else 'w') as out_file:
-                formatters[fmt](out_file, machine_code_list)
-        except Exception as e:
-            exit(f"Cannot write output file '{machine_code_filename}'! {str(e)}")
+        
+    try:
+        with open(machine_code_filename, 'wb' if fmt == 'binary' else 'w') as out_file:
+            formatters[fmt](out_file, machine_code_list)
+    except IOError as e:
+        exit(f"Cannot write output file '{machine_code_filename}'! {str(e)}")
         
