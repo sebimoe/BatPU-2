@@ -1,8 +1,6 @@
 import sys
 
 def assemble(lines):
-    machine_code_list = []
-
     # Remove comments and blanklines
     for comment_symbol in ['/', ';', '#']:
         lines = [line.split(comment_symbol)[0] for line in lines]
@@ -78,7 +76,7 @@ def assemble(lines):
         if words[0] == 'cmp':
             words = ['sub', words[1], words[2], registers[0]] # sub A B r0
         elif words[0] == 'mov':
-            words = ['add', words[1], registers[0], words[2], ] # add A r0 dest
+            words = ['add', words[1], registers[0], words[2]] # add A r0 dest
         elif words[0] == 'lsh':
             words = ['add', words[1], words[1], words[2]] # add A A dest
         elif words[0] == 'inc':
